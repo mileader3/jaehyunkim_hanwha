@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>김재현 - 한화생명 지원자 포트폴리오</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        hanwha: '#F37321',
+                        dark: '#111111'
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    
+    <style>
+        html {
+            scroll-padding-top: 80px; 
+        }
+        body {
+            font-family: 'Pretendard', sans-serif;
+            overflow: hidden; /* Locked during intro */
+            background-color: #ffffff;
+            color: #111111;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- Cinematic Intro Overlay --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: #000000;
+            z-index: 9999;
+            display: flex;
+            align-items: center; justify-content: center;
+            transition: background-color 0.1s ease, opacity 1.2s ease;
+        }
+
+        #intro-text-box {
+            display: flex;
+            align-items: center; justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #ffffff;
+            letter-spacing: 0.03em;
+        }
+        @media (min-width: 768px) {
+            #intro-text-box { font-size: 4rem; }
+        }
+
+        #lifeplus-part {
+            display: inline-block;
+            white-space: pre;
+            overflow: hidden;
+            max-width: 500px;
+            opacity: 1;
+            filter: blur(0px);
+            transition: opacity 0.8s ease-out, filter 0.8s ease-out, max-width 1s cubic-bezier(0.65, 0, 0.35, 1) 0.3s;
+        }
+        .lifeplus-fade {
+            opacity: 0 !important;
+            filter: blur(8px) !important;
+            max-width: 0px !important;
+        }
+
+        #hanwha-part-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center; justify-content: center;
+        }
+
+        #hanwha-text {
+            position: relative;
+            z-index: 10;
+            color: #F37321;
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0px);
+            transition: opacity 0.5s ease-in, transform 0.5s cubic-bezier(0.5, -0.5, 0.5, 1.5), filter 0.4s ease;
+        }
+        .hanwha-collapse {
+            opacity: 0 !important;
+            transform: scale(0.2) !important;
+            filter: blur(4px) !important;
+        }
+
+        #orange-dot {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 24px; height: 24px;
+            margin-top: -12px; margin-left: -12px;
+            background-color: #F37321;
+            border-radius: 50%;
+            z-index: 5;
+            opacity: 0;
+            transform: scale(0);
+            transition: opacity 0.3s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .dot-pop {
+            opacity: 1 !important;
+            transform: scale(1) !important;
+        }
+        .dot-expand {
+            transition: transform 1s cubic-bezier(0.8, 0, 0.2, 1) !important; 
+            transform: scale(200) !important;
+        }
+
+        #greeting-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -30%);
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #111111;
+            opacity: 0;
+            filter: blur(10px);
+            z-index: 20;
+            text-align: center;
+            white-space: nowrap;
+            transition: opacity 1.2s ease, transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), filter 1.2s ease;
+        }
+        @media (min-width: 768px) {
+            #greeting-text { font-size: 2.5rem; }
+        }
+        .greeting-show {
+            opacity: 1 !important;
+            transform: translate(-50%, -50%) !important;
+            filter: blur(0px) !important;
+        }
+        .greeting-hide {
+            opacity: 0 !important;
+            transform: translate(-50%, -60%) !important;
+            filter: blur(5px) !important;
+        }
+
+        /* --- Page Sections --- */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 6rem 1.5rem;
+        }
+
+        /* Keyword Hover Effects */
+        .keyword-item {
+            position: relative;
+            z-index: 1; 
+            color: transparent;
+            -webkit-text-stroke: 2px #e5e7eb;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+        }
+        .group:hover .keyword-item {
+            color: #F37321;
+            -webkit-text-stroke: 0px transparent;
+            transform: scale(1.05) translateY(-10px);
+            text-shadow: 0 20px 40px rgba(243, 115, 33, 0.2);
+            z-index: 99;
+        }
+
+        /* Postcard Style */
+        .postcard {
+            background-image: linear-gradient(to bottom, #ffffff, #fdfdfd);
+            border: 1px solid #f0f0f0;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .postcard:hover {
+            transform: translateY(-8px) rotate(1deg);
+            box-shadow: 0 20px 40px -10px rgba(243, 115, 33, 0.15);
+            border-color: rgba(243, 115, 33, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-overlay">
+        <div id="intro-text-box">
+            <span id="lifeplus-part">LIFEPLUS with </span>
+            <div id="hanwha-part-container">
+                <span id="hanwha-text">HANWHA</span>
+                <div id="orange-dot"></div>
+            </div>
+        </div>
+        <div id="greeting-text">안녕하세요,<br class="md:hidden"> 한화생명 지원자 김재현입니다.</div>
+    </div>
+
+    <header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-md z-40 px-6 py-4 transition-all border-b border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+        <a href="#home" class="text-xl md:text-2xl font-bold tracking-tight text-gray-900 cursor-pointer whitespace-nowrap hover:opacity-80 transition-opacity">
+            Hi, <span class="text-hanwha">Hanwha</span>
+        </a>
+        <nav class="flex overflow-x-auto hide-scrollbar w-full md:w-auto gap-6 text-sm font-medium text-gray-600 px-2 pb-1 md:pb-0 justify-start md:justify-end">
+            <a href="#about" class="hover:text-hanwha transition-colors whitespace-nowrap">About Myself</a>
+            <a href="#keyword" class="hover:text-hanwha transition-colors whitespace-nowrap">Core Values</a>
+            <a href="#skills" class="hover:text-hanwha transition-colors whitespace-nowrap">Skills & Qualifications</a>
+            <a href="#extracurricular" class="hover:text-hanwha transition-colors whitespace-nowrap">Extracurricular Activities</a>
+            <a href="#projects" class="hover:text-hanwha transition-colors whitespace-nowrap">Course Projects</a>
+        </nav>
+    </header>
+
+    <main id="main-content" class="max-w-7xl mx-auto pt-10 md:pt-0 overflow-x-hidden">
+        
+        <!-- Home Section -->
+        <section id="home" class="relative items-center text-center min-h-screen flex justify-center w-screen bg-white" style="margin-left: calc(-50vw + 50%);">
+            <div class="relative z-10 flex flex-col items-center justify-center w-full px-6">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 leading-tight text-gray-900">
+                    진정한 '한화인'을 지향합니다
+                </h1>
+                <p class="text-xl md:text-3xl text-gray-600 font-medium mb-8 tracking-tight">
+                    삶의 가치를 더하는 한화생명에, 글로벌의 가치를 더하겠습니다.
+                </p>
+                <div class="inline-block px-6 py-3 bg-gray-50 border border-gray-200 rounded-full text-lg md:text-xl text-gray-800 font-medium shadow-sm">
+                    신사업_글로벌, 해외사업 직무에 지원합니다.
+                </div>
+            </div>
+        </section>
+
+        <!-- 01 About Myself Section -->
+        <section id="about" class="items-start md:items-center pt-24 bg-white">
+            <div class="w-full max-w-5xl mx-auto px-6 md:px-12">
+                <h2 class="text-hanwha text-sm font-bold tracking-widest uppercase mb-12">01 / About Myself</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
+                    <div class="md:col-span-1 space-y-6">
+                        <h3 class="text-4xl font-bold text-gray-900">김재현</h3>
+                        <p class="text-lg text-gray-600">2001. 09. 27</p>
+                    </div>
+                    <div class="md:col-span-2 space-y-10">
+                        <div class="border-l-2 border-gray-200 pl-6 relative">
+                            <div class="absolute w-3 h-3 bg-hanwha rounded-full -left-[7px] top-2"></div>
+                            <h4 class="text-xl md:text-2xl font-semibold text-gray-900 flex flex-wrap items-baseline gap-2 md:gap-3">
+                                고려대학교 
+                                <span class="text-base md:text-lg text-gray-500 font-normal">GPA 4.27 / 4.5</span>
+                            </h4>
+                            <p class="text-gray-600 mt-1">경영학과 / 공공거버넌스와 리더십 (융합전공)</p>
+                            <p class="text-sm text-gray-400 mt-2">2021.03 ~ 2027.06 (졸업예정)</p>
+                        </div>
+                        <div class="border-l-2 border-gray-200 pl-6 relative">
+                            <div class="absolute w-3 h-3 bg-gray-300 rounded-full -left-[7px] top-2"></div>
+                            <h4 class="text-xl md:text-2xl font-semibold text-gray-900 flex flex-wrap items-baseline gap-2 md:gap-3">
+                                Intl. School Frankfurt Rhein-Main 
+                                <span class="text-base md:text-lg text-gray-500 font-normal">GPA 3.93 / 4.00</span>
+                            </h4>
+                            <p class="text-gray-600 mt-1">독일, 프랑크푸르트</p>
+                            <p class="text-sm text-gray-400 mt-2">2017.02 ~ 2019.06 (졸업)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 02 Core Values Section -->
+        <section id="keyword" class="min-h-screen flex items-center justify-center overflow-hidden relative bg-white">
+            <div class="w-full max-w-7xl mx-auto absolute top-10 md:top-32 left-0 right-0 px-6 md:px-12 text-left">
+                <h2 class="text-hanwha text-sm font-bold tracking-widest uppercase">02 / Core Values</h2>
+            </div>
+            
+            <div class="w-full max-w-7xl mx-auto px-6 md:px-12 relative flex flex-col justify-center h-full mt-24 md:mt-0">
+                
+                <div class="flex flex-col w-full md:w-1/2 z-10">
+                    
+                    <!-- 1. 도전 -->
+                    <div class="group w-max">
+                        <div class="keyword-item text-[4.5rem] sm:text-[6rem] md:text-[8rem] lg:text-[10rem] font-black leading-none">도전</div>
+                        
+                        <div class="fixed md:absolute top-[40%] md:top-1/2 left-6 right-6 md:left-auto md:right-0 -translate-y-1/2 md:w-[45%] opacity-0 translate-x-8 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-700 ease-out z-[100]">
+                            <div class="bg-white/80 backdrop-blur-xl p-8 md:p-12 rounded-3xl shadow-[0_20px_60px_-15px_rgba(243,115,33,0.15)] border border-hanwha/20">
+                                <h3 class="text-2xl md:text-3xl font-bold text-hanwha mb-4 break-keep">도전: 새로운 시도를 두려워하지 않습니다.</h3>
+                                <p class="text-lg md:text-xl text-gray-700 font-medium leading-relaxed break-keep mb-4">
+                                    교내 국제법학회 학회장에 지원할 때, 두려움보다 설렘이 앞섰습니다. 처음 조직을 이끄는 경험을 앞두고, 저는 학회원들과 맺을 수많은 인연들과, 학회 외연의 확장이라는 목표를 마음에 그리고 있었습니다. 그리고 학회장직을 마칠 때에는, 학회 최초의 교내외 연합 학술 활동을 성공적으로 마친 뒤였습니다.
+                                </p>
+                                <p class="text-lg md:text-xl font-bold text-hanwha leading-relaxed break-keep">
+                                    도전은 항상 새로운 도전을 낳습니다. 한화생명이 저의 새로운 도전입니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. 헌신 -->
+                    <div class="group w-max ml-12 md:ml-24 -mt-2 md:-mt-6">
+                        <div class="keyword-item text-[4.5rem] sm:text-[6rem] md:text-[8rem] lg:text-[10rem] font-black leading-none">헌신</div>
+                        
+                        <div class="fixed md:absolute top-[40%] md:top-1/2 left-6 right-6 md:left-auto md:right-0 -translate-y-1/2 md:w-[45%] opacity-0 translate-x-8 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-700 ease-out z-[100]">
+                            <div class="bg-white/80 backdrop-blur-xl p-8 md:p-12 rounded-3xl shadow-[0_20px_60px_-15px_rgba(243,115,33,0.15)] border border-hanwha/20">
+                                <h3 class="text-2xl md:text-3xl font-bold text-hanwha mb-4 break-keep">헌신: 상대의 의견을 항상 존중합니다.</h3>
+                                <p class="text-lg md:text-xl text-gray-700 font-medium leading-relaxed break-keep mb-4">
+                                    학부법학회 경제법팀으로 활동하며, 세미나 발표를 앞두고 팀원으로부터 기존의 주제가 법리에 맞지 않다는 의견을 들었습니다. 저는 그 팀원과 충돌하기보다, 함께 해외 사례와의 비교법 연구를 진행하여 저희 주제와의 유사점과 차이점을 함께 다루자고 하였습니다. 결과적으로 저희 발표는 더욱 풍성해질 수 있었습니다.
+                                </p>
+                                <p class="text-lg md:text-xl font-bold text-hanwha leading-relaxed break-keep">
+                                    협력과 헌신의 가치를 재발견할 한화생명에서의 여정을 기대합니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. 정도 -->
+                    <div class="group w-max ml-24 md:ml-48 -mt-2 md:-mt-6">
+                        <div class="keyword-item text-[4.5rem] sm:text-[6rem] md:text-[8rem] lg:text-[10rem] font-black leading-none">정도</div>
+                        
+                        <div class="fixed md:absolute top-[40%] md:top-1/2 left-6 right-6 md:left-auto md:right-0 -translate-y-1/2 md:w-[45%] opacity-0 translate-x-8 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-700 ease-out z-[100]">
+                            <div class="bg-white/80 backdrop-blur-xl p-8 md:p-12 rounded-3xl shadow-[0_20px_60px_-15px_rgba(243,115,33,0.15)] border border-hanwha/20">
+                                <h3 class="text-2xl md:text-3xl font-bold text-hanwha mb-4 break-keep">정도: 항상 올바른 길을 걷는다는 자부심이 있습니다.</h3>
+                                <p class="text-lg md:text-xl text-gray-700 font-medium leading-relaxed break-keep mb-4">
+                                    두 차례의 법학회 활동, 24학점의 법학 학부수업을 수강하며 상법과 경제법, 그리고 국제법을 익혔습니다. 법학 과목 수강을 통해 습득한 공정과 원칙주의는, 제 리더십과 가치관의 든든한 기반이 되었습니다.
+                                </p>
+                                <p class="text-lg md:text-xl font-bold text-hanwha leading-relaxed break-keep">
+                                    어떤 상황에서도 올바른 길을 걷는 자랑스러운 한화인이 되겠습니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 03 Skills & Qualifications Section -->
+        <section id="skills" class="items-center justify-center bg-gray-50/50">
+            <div class="w-full max-w-7xl mx-auto flex flex-col h-full">
+                <h2 class="text-hanwha text-sm font-bold tracking-widest uppercase mb-16 px-6 md:px-12">03 / Skills & Qualifications</h2>
+                
+                <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 w-full px-6 md:px-12 my-auto">
+                    <div class="text-center group">
+                        <p class="text-gray-400 text-sm md:text-lg font-medium mb-2 uppercase tracking-widest group-hover:text-hanwha transition-colors">English</p>
+                        <h3 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 tracking-tighter">TOEIC 990</h3>
+                    </div>
+                    <div class="text-center group">
+                        <p class="text-gray-400 text-sm md:text-lg font-medium mb-2 uppercase tracking-widest group-hover:text-hanwha transition-colors">English Speaking</p>
+                        <h3 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 tracking-tighter">OPIc AL</h3>
+                    </div>
+                    <div class="text-center group">
+                        <p class="text-gray-400 text-sm md:text-lg font-medium mb-2 uppercase tracking-widest group-hover:text-hanwha transition-colors">Data</p>
+                        <h3 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 tracking-tighter">ADsP</h3>
+                    </div>
+                    <div class="text-center group">
+                        <p class="text-gray-400 text-sm md:text-lg font-medium mb-2 uppercase tracking-widest group-hover:text-hanwha transition-colors">Accounting</p>
+                        <h3 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 tracking-tighter">회계관리 2급</h3>
+                    </div>
+                </div>
+
+                <div class="mt-24 mb-10 text-center px-6">
+                    <h4 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">Others</h4>
+                    <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+                        <span class="px-5 py-2.5 bg-white border border-gray-200 shadow-sm rounded-full text-gray-600 font-medium text-sm md:text-base">워드프로세서</span>
+                        <span class="px-5 py-2.5 bg-white border border-gray-200 shadow-sm rounded-full text-gray-600 font-medium text-sm md:text-base">MOS Excel</span>
+                        <span class="px-5 py-2.5 bg-white border border-gray-200 shadow-sm rounded-full text-gray-600 font-medium text-sm md:text-base">MOS PowerPoint</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 04 Extracurricular Activities Section -->
+        <section id="extracurricular" class="justify-center py-20 px-0 bg-white">
+            <div class="px-6 md:px-12 mb-10">
+                <h2 class="text-hanwha text-sm font-bold tracking-widest uppercase mb-4">04 / Extracurricular Activities</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-gray-900">리더십과 논리적 소통</h3>
+            </div>
+            
+            <div class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-8 pb-12 px-6 md:px-12 w-full">
+                <!-- 고려대학교 국제법학회 -->
+                <div class="postcard snap-center shrink-0 w-[85vw] sm:w-[400px] rounded-3xl p-8 md:p-10 flex flex-col relative overflow-hidden">
+                    <div class="w-12 h-1 bg-hanwha mb-8 rounded-full"></div>
+                    <div class="mb-4">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="inline-block px-3 py-1 bg-orange-50 text-hanwha text-xs font-bold rounded-full">학회장</span>
+                            <span class="inline-block px-3 py-1 bg-yellow-50 text-yellow-600 text-xs font-bold rounded-full border border-yellow-200 shadow-sm">🏆 최우수학회원상</span>
+                            <span class="inline-block px-3 py-1 bg-yellow-50 text-yellow-600 text-xs font-bold rounded-full border border-yellow-200 shadow-sm">🏆 최우수소논문상</span>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-900 leading-snug">고려대학교 국제법학회<br/>KUILS</h4>
+                        <p class="text-sm text-hanwha font-semibold mt-2 tracking-wide">[2025.09 ~ 2026.05]</p>
+                    </div>
+                    <p class="text-gray-600 mt-2 leading-relaxed font-medium">
+                        25명의 정회원과 65명의 알럼나이로 구성된 학회를 이끌었습니다. 이화여대 국제법학회와의 연합 학술 활동을 직접 기획하고 추진하였으며, 무형자산인 데이터 관세에 관한 WTO 모라토리엄 소논문으로 최우수 소논문상을 수상하였습니다. 학회에 대한 헌신과 열정을 인정받아 최우수 학회원으로 선정되었습니다.
+                    </p>
+                </div>
+
+                <!-- 고려대학교 학부법학회 -->
+                <div class="postcard snap-center shrink-0 w-[85vw] sm:w-[400px] rounded-3xl p-8 md:p-10 flex flex-col relative overflow-hidden">
+                    <div class="w-12 h-1 bg-hanwha mb-8 rounded-full"></div>
+                    <div class="mb-4">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full">학회원</span>
+                            <span class="inline-block px-3 py-1 bg-yellow-50 text-yellow-600 text-xs font-bold rounded-full border border-yellow-200 shadow-sm">🏆 최우수세미나상</span>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-900 leading-snug">고려대학교 학부법학회<br/>KUPLS</h4>
+                        <p class="text-sm text-hanwha font-semibold mt-2 tracking-wide">[2025.03 ~ 2025.06]</p>
+                    </div>
+                    <p class="text-gray-600 mt-2 leading-relaxed font-medium">
+                        학회 경제법팀에 소속되어 시의성 있는 정책, 법률 현안을 조사하고 개선 방안을 공유하였습니다. 주식시장에 도입된 대체거래소(ATS)의 문제점을 파악하고, 최선집행의무에 관한 미국/일본 비교법 연구를 통해 규제 개선 방안을 도출하여 최우수 세미나상을 수상하였습니다.
+                    </p>
+                </div>
+
+                <!-- 중앙토론동아리 -->
+                <div class="postcard snap-center shrink-0 w-[85vw] sm:w-[400px] rounded-3xl p-8 md:p-10 flex flex-col relative overflow-hidden">
+                    <div class="w-12 h-1 bg-hanwha mb-8 rounded-full"></div>
+                    <div class="mb-4">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full">정회원</span>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-900 leading-snug">중앙토론동아리<br/>고란도란</h4>
+                        <p class="text-sm text-hanwha font-semibold mt-2 tracking-wide">[2021.09 ~ 2022.08]</p>
+                    </div>
+                    <p class="text-gray-600 mt-2 leading-relaxed font-medium">
+                        다양한 시사적 쟁점에 대해 토론하며, 상대방의 관점을 분석하고 그에 맞춰 논리적으로 설득하며 수용 가능한 해법을 제시하는 소통 역량을 배양했습니다. 토론연구부와 세션기획부에 소속되어 토론 주제를 주체적으로 발굴하고 효과적인 설득의 방법들을 익힐 수 있었습니다.
+                    </p>
+                </div>
+                <div class="snap-center shrink-0 w-4 md:w-12"></div>
+            </div>
+        </section>
+
+        <!-- 05 Course Projects Section -->
+        <section id="projects" class="justify-center py-20 px-0 bg-gray-50/30">
+            <div class="px-6 md:px-12 mb-10">
+                <h2 class="text-hanwha text-sm font-bold tracking-widest uppercase mb-4">05 / Course Projects</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-gray-900">[학부 수업] 전략적 분석과 문제 해결</h3>
+            </div>
+            
+            <div class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-8 pb-12 px-6 md:px-12 w-full">
+                <!-- 국제통상특강 -->
+                <div class="postcard snap-center shrink-0 w-[85vw] sm:w-[400px] rounded-3xl p-8 md:p-10 flex flex-col">
+                    <div class="w-12 h-1 bg-hanwha mb-8 rounded-full"></div>
+                    <div class="mb-4">
+                        <span class="inline-block px-3 py-1 bg-orange-50 text-hanwha text-xs font-bold rounded-full mb-3">팀장</span>
+                        <h4 class="text-2xl font-bold text-gray-900">국제통상특강</h4>
+                        <p class="text-sm text-hanwha font-semibold mt-2 tracking-wide">[2025.09 ~ 2025.12]</p>
+                    </div>
+                    <p class="text-gray-600 mt-2 leading-relaxed font-medium">
+                        중국 전기차 기업 샤오펑(Xpeng)의 경영전략을 PESTEL, P5F 기법으로 분석하고, 소프트웨어 정의 차량(SDV) AI 역량을 바탕으로 한 유럽 진출 전략을 검토 및 제안하였습니다.
+                    </p>
+                </div>
+
+                <!-- 벤처경영 -->
+                <div class="postcard snap-center shrink-0 w-[85vw] sm:w-[400px] rounded-3xl p-8 md:p-10 flex flex-col">
+                    <div class="w-12 h-1 bg-hanwha mb-8 rounded-full"></div>
+                    <div class="mb-4">
+                        <span class="inline-block px-3 py-1 bg-orange-50 text-hanwha text-xs font-bold rounded-full mb-3">팀장</span>
+                        <h4 class="text-2xl font-bold text-gray-900">벤처경영</h4>
+                        <p class="text-sm text-hanwha font-semibold mt-2 tracking-wide">[2025.03 ~ 2025.06]</p>
+                    </div>
+                    <p class="text-gray-600 mt-2 leading-relaxed font-medium">
+                        외국인을 위한 화면 스크롤 기반 생활번역 AI 앱 'AllApp Translator'를 기획했습니다. 노코드 툴로 MVP를 구현하고, OpenAI API 연동 및 잠재 고객 설문을 통해 사업성을 검증했습니다.
+                    </p>
+                </div>
+
+                <!-- 국제경영론 -->
+                <div class="postcard snap-center shrink-0 w-[85vw] sm:w-[400px] rounded-3xl p-8 md:p-10 flex flex-col">
+                    <div class="w-12 h-1 bg-hanwha mb-8 rounded-full"></div>
+                    <div class="mb-4">
+                        <span class="inline-block px-3 py-1 bg-orange-50 text-hanwha text-xs font-bold rounded-full mb-3">팀장</span>
+                        <h4 class="text-2xl font-bold text-gray-900">국제경영론</h4>
+                        <p class="text-sm text-hanwha font-semibold mt-2 tracking-wide">[2025.12 ~ 2026.01]</p>
+                    </div>
+                    <p class="text-gray-600 mt-2 leading-relaxed font-medium">
+                        아모레퍼시픽의 북미 클린뷰티 브랜드인 타타 하퍼 인수를 마케팅 동적역량(MDC) 관점에서 분석하여 부진 원인을 파악하고, 미국 소비자의 변화된 니즈(기능성)에 맞춘 새로운 전략을 도출했습니다.
+                    </p>
+                </div>
+
+                <!-- 마케팅조사론 (스타일 통일됨, 스크롤 넘기면 확인 가능) -->
+                <div class="postcard snap-center shrink-0 w-[85vw] sm:w-[400px] rounded-3xl p-8 md:p-10 flex flex-col">
+                    <div class="w-12 h-1 bg-hanwha mb-8 rounded-full"></div>
+                    <div class="mb-4">
+                        <span class="inline-block px-3 py-1 bg-orange-50 text-hanwha text-xs font-bold rounded-full mb-3">Data Analysis</span>
+                        <h4 class="text-2xl font-bold text-gray-900">마케팅조사론</h4>
+                        <p class="text-sm text-hanwha font-semibold mt-2 tracking-wide">[2026.03 ~ 2026.06]</p>
+                    </div>
+                    <p class="text-gray-600 mt-2 leading-relaxed font-medium">
+                        샌프란시스코 공항 설문 데이터(654건)를 R을 활용해 분석했습니다. 다중회귀분석을 통해 단순 상관관계를 넘어 실제 고객 만족도에 유의미한 영향을 미치는 개선 우선순위를 도출했습니다.
+                    </p>
+                </div>
+                <div class="snap-center shrink-0 w-4 md:w-12"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white py-32 border-t border-gray-100 flex flex-col items-center justify-center text-center px-6">
+        <p class="text-xl md:text-2xl font-medium text-gray-800 tracking-tight">
+            한화생명과 함께 만들어갈 더 나은 내일을 기대합니다.<br class="md:hidden"/> 감사합니다.
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const introOverlay = document.getElementById("intro-overlay");
+            const lifeplusPart = document.getElementById("lifeplus-part");
+            const hanwhaText = document.getElementById("hanwha-text");
+            const orangeDot = document.getElementById("orange-dot");
+            const greetingText = document.getElementById("greeting-text");
+
+            // Scroll to top on load
+            window.scrollTo(0,0);
+
+            // 1. Fade out "LIFEPLUS with"
+            setTimeout(() => {
+                lifeplusPart.classList.add("lifeplus-fade");
+            }, 1000);
+
+            // 2. HANWHA morphs into the dot
+            setTimeout(() => {
+                hanwhaText.classList.add("hanwha-collapse");
+                // Slightly offset dot pop to overlap with text collapsing
+                setTimeout(() => {
+                    orangeDot.classList.add("dot-pop");
+                }, 100);
+            }, 2300);
+
+            // 3. Massive wipe expansion
+            setTimeout(() => {
+                orangeDot.classList.add("dot-expand");
+            }, 3000);
+
+            // 4. White background + Greeting reveal
+            setTimeout(() => {
+                // Background behind overlay turns white seamlessly
+                introOverlay.style.backgroundColor = "#ffffff";
+                
+                // Hide the giant orange dot instantly since bg is now white
+                orangeDot.style.opacity = "0"; 
+                orangeDot.style.display = "none";
+                
+                // Show greeting
+                greetingText.classList.add("greeting-show");
+            }, 3600); 
+
+            // 5. Greeting fades out
+            setTimeout(() => {
+                greetingText.classList.remove("greeting-show");
+                greetingText.classList.add("greeting-hide");
+            }, 5500);
+
+            // 6. Reveal Home screen
+            setTimeout(() => {
+                introOverlay.style.opacity = "0";
+                document.body.style.overflow = "auto";
+                
+                setTimeout(() => {
+                    introOverlay.style.display = "none";
+                }, 1200);
+            }, 6400);
+            
+            // Postcard side scrolling with mouse wheel
+            const scrollContainers = document.querySelectorAll('.hide-scrollbar');
+            scrollContainers.forEach(container => {
+                if(container.tagName !== 'NAV'){
+                    container.addEventListener('wheel', (e) => {
+                        if (e.deltaY !== 0) {
+                            e.preventDefault();
+                            container.scrollLeft += e.deltaY;
+                        }
+                    }, { passive: false });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
